@@ -42,7 +42,7 @@ Dr. August Dvorak was a professor of education at the University of Washington. 
 
 ![Colemak layout diagram](diagrams/diagram-colemak_layout.png)
 
-Created by Shai Coleman as an answer to Dvorak, this layout seeks to be easier to learn for people that already know QWERTY by keeping many of the same letter placements. This also serves to preserve many of the most common keyboard shortcuts like those used for undo (Z), cut (X), copy (C), paste (V), select all (A), quit (Q), and close window (W). It also replaces the capslock key with a backspace key, because CAPSLOCK IS VERY RARELY USED and backspace is used constantly. Other than that, Colemak has many of the same design goals as Dvorak, such as minimizing finger travel distance and having high hand alternation. It also purports to have lower same finger utilization. Here are my criticisms:
+Created by Shai Coleman as an answer to Dvorak, this layout seeks to be easier to learn for people that already know QWERTY by keeping many of the same letter placements. This also serves to preserve many of the most common keyboard shortcuts like those used for undo (Z), cut (X), copy (C), paste (V), select all (A), quit (Q), and close window (W). It also replaces the caps lock key with a backspace key, because CAPS LOCK IS VERY RARELY USED and backspace is used constantly. Other than that, Colemak has many of the same design goals as Dvorak, such as minimizing finger travel distance and having high hand alternation. It also purports to have lower same finger utilization. Here are my criticisms:
 
 * As explained above for Dvorak, minimizing same hand utilization and finger travel distance are not the most important metrics.
 * Similarity to QWERTY for ease of learning is not important to me. I'm hopefully going to be using a keyboard for the rest of my life, so the learning time is a relatively small investment.
@@ -64,7 +64,7 @@ He codified this design concept by creating a customized key score for each key 
 * The scores should reflect that the middle finger is stronger and more coordinated than the ring finger.
 * There are no scores for the keys with numbers and symbols.
 * As previously mentioned, preserving only some QWERTY shortcuts is a bad thing, in my opinion.
-* The home keys are still in the same place as the ASDF and JKL; keys in QWERTY. If we're going to go to the trouble of changing from the standard layout, we might as well get rid of as many unnecessary constraints as possible, including where we put our hands on the keyboard. Sliding the right hand one key right allows the right pinky to be assigned to almost half as many keys as before. If I'm going to be reaching for a key, I prefer to use my strong index finger instead of my weak pinky. Plus, the right pinky is already responsible for the enter and shift keys (also the backspace key in most layouts). Another minor reason for shifting the right hand one key right is that it's pleasingly symmetric. The enter and capslock keys will now be adjacent to your pinkies. On most laptops, your hands will now be equidistant from both edges.
+* The home keys are still in the same place as the ASDF and JKL; keys in QWERTY. If we're going to go to the trouble of changing from the standard layout, we might as well get rid of as many unnecessary constraints as possible, including where we put our hands on the keyboard. Sliding the right hand one key right allows the right pinky to be assigned to almost half as many keys as before. If I'm going to be reaching for a key, I prefer to use my strong index finger instead of my weak pinky. Plus, the right pinky is already responsible for the enter and shift keys (also the backspace key in most layouts). Another minor reason for shifting the right hand one key right is that it's pleasingly symmetric. The enter and caps lock keys will now be adjacent to your pinkies. On most laptops, your hands will now be equidistant from both edges.
 * Another unnecessary constraint is keeping the same key pairings as used by QWERTY. For example, the comma key is still paired with the left angle bracket key, in what I consider to be prime real estate space, while the left parenthesis is stuck off in the boonies, in the top row behind behind the 9.
 
 
@@ -174,7 +174,7 @@ Until then, I have performed an informal parameter study and chosen the followin
 | hand-alternation penalty | 0.20        |
 
 
-## Finding the Optimal Layout
+## Finding the optimal layout
 
 In order to find the optimal layout for a given objective function, I wrote a program in the [Rust programming language](http://rust-lang.org) that uses a combination of [simulated annealing](http://en.wikipedia.org/wiki/Simulated_annealing) and [tabu search](http://en.wikipedia.org/wiki/Tabu_search). The code is included in this repository so that you too can design your own custom keyboard layout using your own collected works as the text corpus. Just remove or replace any non-ASCII characters in the texts and place them as .txt files in the "texts" directory and type "cargo run --release" to search for an optimal layout.
 
