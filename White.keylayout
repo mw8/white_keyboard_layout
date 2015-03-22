@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE keyboard PUBLIC "" "file://localhost/System/Library/DTDs/KeyboardLayout.dtd">
 <!-- Fri, 24 Feb 2006 Generated from KCHR: "DVORAK - QWERTY CMD" -->
-<!--Last edited by Ukelele version 2.2.8 on 2015-03-21 at 18:56 (CDT)-->
+<!--Last edited by Ukelele version 2.2.8 on 2015-03-21 at 22:04 (CDT)-->
 <keyboard group="0" id="16301" name="White" maxout="1">
     <layouts>
         <layout first="0" last="0" modifiers="commonModifiers" mapSet="ANSI"/>
@@ -95,7 +95,7 @@
             <key code="44" output="z"/>
             <key code="45" output="x"/>
             <key code="46" output="r"/>
-            <key code="47" output="&#x0027;"/>
+            <key code="47" output="."/>
             <key code="48" output="&#x0009;"/>
             <key code="49" action=" "/>
             <key code="50" output="#"/>
@@ -213,7 +213,7 @@
             <key code="44" output="Z"/>
             <key code="45" output="X"/>
             <key code="46" output="R"/>
-            <key code="47" output="&#x0022;"/>
+            <key code="47" output=":"/>
             <key code="48" output="&#x0009;"/>
             <key code="49" action=" "/>
             <key code="50" output="`"/>
@@ -1287,7 +1287,7 @@
             <when state="s5" output="Ù"/>
         </action>
         <action id="Y">
-            <when state="none" output=":"/>
+            <when state="none" output="&#x0022;"/>
             <when state="s2" output="Ÿ"/>
         </action>
         <action id="`">
@@ -1376,7 +1376,7 @@
             <when state="s5" output="ù"/>
         </action>
         <action id="y">
-            <when state="none" output="."/>
+            <when state="none" output="&#x0027;"/>
             <when state="s2" output="ÿ"/>
         </action>
         <action id="y 1">
