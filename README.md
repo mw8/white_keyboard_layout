@@ -56,9 +56,9 @@ Created by Shai Coleman as an answer to Dvorak, this layout seeks to be easier t
 
 This layout was developed by a programmer, OJ Bucao, as part of his plan to deal with repetitive strain injury (RSI), along with switching to a grid-type keyboard, with the keys in straight columns. One insight that came with the design of this layout is that finger travel distance is not an important metric. Each finger has a different range of motion and overall strength. The index finger is short and strong; the middle finger, long and strong; the ring finger, long and weak; and the pinky finger, short and weak. Short fingers don't like to stretch to the top row, whereas long fingers don't like to curl to reach the bottom row. Strong fingers should do more work than weak ones. And in general, fingers move vertically (via extending or curling) faster than they do horizontally.
 
-![Workman metric diagram](diagrams/diagram-workman_metric.png)
+![Workman key score diagram](diagrams/diagram-workman_metric.png)
 
-He codified this design concept by creating a customized key score for each key press (shown above). Combining this key scoring procedure with a choice of input text will create a metric, but the Workman layout has other goals as well. It strives to maintain common QWERTY shortcuts, to work well on common bigrams, to use both hands about equally, and to have high same hand utilization. My relatively minor problems with this layout are
+He codified this design concept by creating a customized key score for each key press (shown above). Combining this key scoring procedure with a choice of input text will create an objective function, but the Workman layout has other goals as well. It strives to maintain common QWERTY shortcuts, to work well on common bigrams, to use both hands about equally, and to have high same hand utilization. My relatively minor problems with this layout are
 
 * There are logical inconsistencies in the key cap scores, due to the fact that it is originally designed for a grid-type keyboard. If you look at the two keys directly below the left index finger's home row key, you'll see that one is scored 3 and the other 2. This signifies that it's easier to move the index finger away from the hand when moving down. But on the right hand, the scores are not mirrored. Moving the right index finger away from the hand is scored higher than  moving it toward the hand.
 * The scores should reflect that the middle finger is stronger and more coordinated than the ring finger.
@@ -72,7 +72,7 @@ He codified this design concept by creating a customized key score for each key 
 
 I've explained my criticisms of some of the design decisions and metrics emphasized by existing layouts, but I also generally object to the idea that we should all use the same layout. If you use a computer almost every day, the amount of time you spend typing in your life will be much greater than the amount of time you spend learning to type using a new layout.
 
-My preferences derive from the fact that I split my time between scientific writing and programming, and so the choice of input text used in evaluating the metric should reflect that. I'm not going to be typing out all of "Alice in Wonderland" anytime soon. I'm mainly going to be writing emails, IMs, research papers, and code.
+My preferences derive from the fact that I split my time between scientific writing and programming, and so the choice of input text used in evaluating the objective function should reflect that. I'm not going to be typing out all of "Alice in Wonderland" anytime soon. I'm mainly going to be writing emails, IMs, research papers, and code.
 
 Another important point is that the amount of time I spend on a computer where I can customize the keyboard layout is much, much larger than the time I spend using a computer without a customizable layout. I am willing to fall back on QWERTY for those rare cases.
 
@@ -80,7 +80,7 @@ Lastly, I just find optimization problems like this fascinating, and I have a fe
 
 1. Move the right hand home position one key to the right, as shown in the finger assignment diagram below.
 2. Only assume that lower-case letters should be paired with their upper-case letters; any other pairing of characters (the numbers and punctuation) to form a key should be permissible.
-3. As an input text for the metric, use all of the text I've typed over the last 4 years. This is a good method of predicting what distribution of characters I will type in the future.
+3. Use all of the text I've typed over the last 5 years as the input text for the objective function. This is a good method of predicting what distribution of characters I will type in the future.
 4. Generalize the idea of custom single key scores (from Workman) and create custom scores for double and triple consecutive key presses as well.
 
 ![Finger assignments diagram](diagrams/diagram-finger_assignments.png)
@@ -108,21 +108,21 @@ This scoring method is then evaluated on a collection of text that is representa
 
 ### Single key scores
 
-The single key metric shown below is a modified version of the scoring system developed for the Workman layout. It addresses my concerns with symmetry and logical consistency and adds scores for all keys in the layout.
+The single key scores shown below are a modified version of the scoring system developed for the Workman layout. It addresses my concerns with symmetry and logical consistency and adds scores for all keys in the layout.
 
-![single key metric diagram](diagrams/diagram-single_metric.png)
+![single key score diagram](diagrams/diagram-single_metric.png)
 
 
 ### Double key scores
 
-The metric for consecutive pairs of keys is shown below. Each layout diagram shows the score associated with pressing the blue key and then subsequently pressing any other key in the diagram. Keys without a score shown have a score of 0. Finger assignments are indicated by alternating key borders of light grey and black.
+The scores for consecutive pairs of keys are shown below. Each layout diagram shows the score associated with pressing the blue key and then subsequently pressing any other key in the diagram. Keys without a score shown have a score of 0. Finger assignments are indicated by alternating key borders of light grey and black.
 
 Despite the apparent randomness in the scores, they follow several general principles.
 
 * The transition score between two keys that are not assigned to adjacent fingers is 0.
 * A horizontally adjacent key that is assigned to an adjacent finger on the same hand is given -2, with the exception of horizontal transitions between the middle and index finger or the ring and pinky finger that happen in the top two rows, which are given -1, and -2 is given to diagonal transitions that better favor the relative positioning of the fingers.
 
-![double key metric diagram](diagrams/diagram-double_metric.png)
+![double key score diagram](diagrams/diagram-double_metric.png)
 
 
 ### Triple key scores
