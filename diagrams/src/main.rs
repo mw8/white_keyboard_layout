@@ -66,7 +66,7 @@ const WORKMAN_STRING: &'static str = "\
   QDRWBJFUP:{}|\
    ASHTGYNEOI\"\
     ZXMCVKL<>?";
-    
+
 const PROTO_1_STRING: &'static str = "\
 |12345%~67890\
   vyd,'+jmlu_(*\
@@ -79,13 +79,13 @@ const PROTO_1_STRING: &'static str = "\
 
 const WHITE_STRING: &'static str = "\
 #12345@$67890\
-  vyd,._jmlu()=\
+  vyd,'_jmlu()=\
    atheb-csnoi\
-    pkgwqxrf'z\
+    pkgwqxrf.z\
 `!<>/|~%\\*[]^\
-  VYD;:&JMLU{}?\
+  VYD;\"&JMLU{}?\
    ATHEB+CSNOI\
-    PKGWQXRF\"Z";
+    PKGWQXRF:Z";
 
 // Which fingers correspond to which keys
 const FINGER_ASSIGNMENT: [usize; 48] = [ 0,
@@ -112,7 +112,7 @@ const SINGLE_METRIC: [f32; 48] = [0.0,
          2.5,  0.1, -0.2,  1.0,  2.0,  5.0,  2.5,  1.0, -0.2,  0.1,  2.5,  3.0,  5.0,
            -0.5, -0.9, -1.2, -1.0,  1.0,  4.5,  1.0, -1.0, -1.2, -0.9, -0.5,
                2.0,  2.0,  0.5,  0.0,  3.0,  3.0,  0.0,  0.5,  2.0,  2.0];
-               
+
 const WORKMAN_METRIC: [f32; 48] = [0.0,
 0.0,  6.0, -1.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
          2.0,  0.0,  0.0,  1.0,  2.0,  3.0,  1.0,  0.0,  0.0,  2.0, 0.01,  0.01, 0.01,
@@ -492,15 +492,15 @@ const DOUBLE_METRIC: [(u8, u8, f32); 314] = [
 
 // Alpha blend a new pixel into an image buffer
 fn blend_pixel(i: u32, j: u32, src_pixel: Rgba<u8>, ib: &mut ImageBuffer<Rgba<u8>,Vec<u8>>)
-{    
+{
     let (dst_r, dst_g, dst_b, dst_a) = {
         let dst_pixel = ib.get_pixel(i, j);
         dst_pixel.channels4()
     };
     let (src_r, src_g, src_b, src_a) = src_pixel.channels4();
-    
+
     let src_alpha = (src_a as f32) / 255.0f32;
-    
+
     let r = 255.0f32.min(src_alpha * src_r as f32 + (1.032 - src_alpha) * dst_r as f32) as u8;
     let g = 255.0f32.min(src_alpha * src_g as f32 + (1.032 - src_alpha) * dst_g as f32) as u8;
     let b = 255.0f32.min(src_alpha * src_b as f32 + (1.032 - src_alpha) * dst_b as f32) as u8;
@@ -537,16 +537,16 @@ impl KeyFaces
     fn new(key_size: u32, key_padding: u32, letter_pt_size: isize, symbol_pt_size: isize)
         -> KeyFaces {
         let library = Library::init().unwrap();
-        
+
         let lf = library.new_face(&Path::new("font.ttf"), 0).unwrap();
         lf.set_char_size(0, letter_pt_size * 64, 0, 0).unwrap();
-        
+
         let sf = library.new_face(&Path::new("font.ttf"), 0).unwrap();
         sf.set_char_size(0, symbol_pt_size * 64, 0, 0).unwrap();
-                
+
         KeyFaces{key_size: key_size, key_padding: key_padding, letter_face: lf, symbol_face: sf}
     }
-    
+
     fn draw_key_cap(&self, x: u32, y: u32, c1: char, c2: char,
                     ib: &mut ImageBuffer<Rgba<u8>,Vec<u8>>) {
         if 'a' <= c1 && c1 <= 'z' {
@@ -576,7 +576,7 @@ impl KeyFaces
             blend_bitmap(x + x_offset2, y + y_offset2, bitmap2, ib);
         }
     }
-    
+
     fn draw_key_score(&self, x: u32, y: u32, score: f32, ib: &mut ImageBuffer<Rgba<u8>,Vec<u8>>) {
         let s  = format!("{:3.1}", score);
         let ss = if &s[..] == "0.0" {
@@ -611,7 +611,7 @@ impl KeyFaces
             xx += glyph.metrics().horiAdvance / 64;
         }
     }
-    
+
     fn draw_key_background(&self, x: u32, y: u32, w: u32, p: Rgba<u8>,
                            ib: &mut ImageBuffer<Rgba<u8>,Vec<u8>>)
     {
@@ -626,7 +626,7 @@ impl KeyFaces
             }
         }
     }
-    
+
     fn draw_key_border(&self, x: u32, y: u32, w: u32, p: Rgba<u8>,
                        ib: &mut ImageBuffer<Rgba<u8>,Vec<u8>>) {
         let kp22 = self.key_padding * 2 + 2;
@@ -641,7 +641,7 @@ impl KeyFaces
         for j in 0..hh {
             ib.put_pixel(x +     self.key_padding, y + j + self.key_padding+1, p);
             ib.put_pixel(x + w-1-self.key_padding, y + j + self.key_padding+1, p);
-        }    
+        }
     }
 }
 
@@ -684,19 +684,19 @@ fn assert_valid_layout_string(s: &str)
 }
 
 fn diagram_keyboard<D: FnMut(u32, u32, u32, usize)>(mut draw_key: D)
-{    
+{
     // Key sizes
     let ks0 = LARGE_KEY_SIZE;
     let ks1 = (ks0 * 3) / 2; // backspace and tab key sizes
     let ks2 = (ks0 * 7) / 4; // caps lock and enter key sizes
     let ks3 = (ks0 * 9) / 4; // shift key sizes
-    
+
     // top row
     for i in 0..13 {
         draw_key(i * ks0, 0, ks0, i as usize);
     }
     draw_key(13 * ks0, 0, ks1, 47); // backspace key
-        
+
     // second row down
     draw_key(0, ks0, ks1, 48); // tab key
     for i in 0..13 {
@@ -709,7 +709,7 @@ fn diagram_keyboard<D: FnMut(u32, u32, u32, usize)>(mut draw_key: D)
         draw_key(ks2 + i * ks0, 2 * ks0, ks0, i as usize + 26);
     }
     draw_key(ks2 + 11 * ks0, 2 * ks0, ks2, 50); // enter key
-        
+
     // fourth row down
     draw_key(0, 3 * ks0, ks3, 51); // left shift
     for i in 0..10 {
@@ -720,7 +720,7 @@ fn diagram_keyboard<D: FnMut(u32, u32, u32, usize)>(mut draw_key: D)
 
 // Draw a keyboard layout diagram from a txt file
 fn diagram_layout(layout: &str, file_name: &str)
-{    
+{
     assert_valid_layout_string(layout);
     let kf = KeyFaces::new(LARGE_KEY_SIZE, LARGE_KEY_PADDING, LETTERS_PT_SIZE, SYMBOLS_PT_SIZE);
     let ks = LARGE_KEY_SIZE;
@@ -733,7 +733,7 @@ fn diagram_layout(layout: &str, file_name: &str)
         }
         kf.draw_key_border(x, y, w, bc, &mut ib);
     });
-        
+
     let output_file_name = "diagram-".to_string() + file_name + ".png";
     let mut output_file  = std::old_io::fs::File::create(&Path::new(output_file_name)).unwrap();
     let _ = image::ImageRgba8(ib).save(&mut output_file, image::PNG);
@@ -742,19 +742,19 @@ fn diagram_layout(layout: &str, file_name: &str)
 
 // Draw a keyboard layout diagram from a txt file
 //fn diagram_layout(layout: &str, file_name: &str)
-//{    
+//{
 //    // verify input
 //    assert_valid_layout_string(layout);
 //
 //    // Load the font
 //    let kf = KeyFaces::new(LARGE_KEY_SIZE, LARGE_KEY_PADDING, LETTERS_PT_SIZE, SYMBOLS_PT_SIZE);
-//    
+//
 //    // Key sizes
 //    let ks0 = LARGE_KEY_SIZE;
 //    let ks1 = (ks0 * 3) / 2; // backspace and tab key sizes
 //    let ks2 = (ks0 * 7) / 4; // caps lock and enter key sizes
 //    let ks3 = (ks0 * 9) / 4; // shift key sizes
-//    
+//
 //    // Draw the layout using the font
 //    let w = 13 * ks0 + (3 * ks0) / 2;
 //    let h =  4 * ks0;
@@ -763,17 +763,17 @@ fn diagram_layout(layout: &str, file_name: &str)
 //        let mut li = 0; // layout char index
 //        let     ls = &layout[..];
 //        let     bc = Rgba::from_channels(0, 0, 0, 255); // border color: black
-//        
+//
 //        // top row
 //        for i in 0..13 {
 //            let x = i * ks0;
 //            let y = 0;
 //            kf.draw_key_cap(x, y, ls.char_at(li), ls.char_at(li+47), &mut ib);
 //            kf.draw_key_border(x, y, ks0, bc, &mut ib);
-//            li += 1; 
+//            li += 1;
 //        }
 //        kf.draw_key_border(13 * ks0, 0, ks1, bc, &mut ib); // backspace key
-//        
+//
 //        // second row down
 //        kf.draw_key_border(0, ks0, ks1, bc, &mut ib); // tab key
 //        for i in 0..13 {
@@ -794,7 +794,7 @@ fn diagram_layout(layout: &str, file_name: &str)
 //            li += 1;
 //        }
 //        kf.draw_key_border(ks2 + 11 * ks0, 2 * ks0, ks2, bc, &mut ib); // enter key
-//        
+//
 //        // fourth row down
 //        kf.draw_key_border(0, 3 * ks0, ks3, bc, &mut ib); // left shift
 //        for i in 0..10 {
@@ -805,8 +805,8 @@ fn diagram_layout(layout: &str, file_name: &str)
 //            li += 1;
 //        }
 //        kf.draw_key_border(ks3 + 10 * ks0, 3 * ks0, ks3, bc, &mut ib); // right shift
-//    }    
-//    
+//    }
+//
 //    // Output the resulting image as a png
 //    let output_file_name = "diagram-".to_string() + file_name + ".png";
 //    let mut output_file      = std::old_io::fs::File::create(&Path::new(output_file_name)).unwrap();
@@ -818,19 +818,19 @@ fn diagram_finger_assignments(print_key_numbers: bool)
 {
     // Load the key faces
     let kf = KeyFaces::new(LARGE_KEY_SIZE, LARGE_KEY_PADDING, LETTERS_PT_SIZE, SYMBOLS_PT_SIZE);
-    
+
     // Key sizes
     let ks0 = LARGE_KEY_SIZE;
     let ks1 = (ks0 * 3) / 2; // backspace and tab key sizes
     let ks2 = (ks0 * 7) / 4; // caps lock and enter key sizes
     let ks3 = (ks0 * 9) / 4; // shift key sizes
-    
+
     let w  = 13 * ks0 + (3 * ks0) / 2;
     let h  =  4 * ks0;
     let mut ib = ImageBuffer::new(w, h);
     {
         let bc = Rgba::from_channels(0, 0, 0, 255); // border color: black
-        
+
         // top row
         for i in 0..13 {
             let x = i * ks0;
@@ -844,7 +844,7 @@ fn diagram_finger_assignments(print_key_numbers: bool)
             }
         }
         kf.draw_key_border(13 * ks0, 0, ks1, bc, &mut ib); // backspace key
-        
+
         // second row down
         kf.draw_key_border(0, ks0, ks1, bc, &mut ib); // tab key
         for i in 0..13 {
@@ -873,7 +873,7 @@ fn diagram_finger_assignments(print_key_numbers: bool)
             }
         }
         kf.draw_key_border(ks2 + 11 * ks0, 2 * ks0, ks2, bc, &mut ib); // enter key
-        
+
         // fourth row down
         kf.draw_key_border(0, 3 * ks0, ks3, bc, &mut ib); // left shift
         for i in 0..10 {
@@ -888,8 +888,8 @@ fn diagram_finger_assignments(print_key_numbers: bool)
             }
         }
         kf.draw_key_border(ks3 + 10 * ks0, 3 * ks0, ks3, bc, &mut ib); // right shift
-    }    
-    
+    }
+
     // Output the resulting image as a png
     let output_filename = if print_key_numbers {
         "diagram-finger_assignments_numbered.png"
@@ -901,28 +901,28 @@ fn diagram_finger_assignments(print_key_numbers: bool)
 }
 
 
-// Color a pixel based on a scalar value between 0 and 1, with clamping      
+// Color a pixel based on a scalar value between 0 and 1, with clamping
 fn intensity(x: f32) -> Rgba<u8>
 {
     let r0 = 0.0;
     let g0 = 1.0;
     let b0 = 0.0;
-    
+
     let r1 = 1.0;
     let g1 = 1.0;
     let b1 = 0.0;
-    
+
     let r2 = 1.0;
     let g2 = 0.0;
     let b2 = 0.0;
-    
+
     let t  = if x >= 1.0 { 1.0 } else if x <= -1.0 { -1.0 } else { x };
     let (r, g, b, a) = if t < 0.0 {
         (-t*r0 + (1.0+t)*r1, -t*g0 + (1.0+t)*g1, -t*b0 + (1.0+t)*b1, 0.15 - t*0.85)
     } else {
         ( (1.0-t)*r1 + t*r2,  (1.0-t)*g1 + t*g2,  (1.0-t)*b1 + t*b2, 0.15 + t*0.85)
     };
-    
+
     Rgba::from_channels((r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8, (a * 255.0) as u8)
 }
 
@@ -931,27 +931,27 @@ fn diagram_single_metric(metric: &[f32; 48], file_name: &str)
 {
     // Load the font
     let kf = KeyFaces::new(LARGE_KEY_SIZE, LARGE_KEY_PADDING, LETTERS_PT_SIZE, SYMBOLS_PT_SIZE);
-    
+
     // Find the minimum value of the single metric
     let min          = metric.iter().fold(std::f32::INFINITY,     |min, &x| min.min(x));
     let max          = metric.iter().fold(std::f32::NEG_INFINITY, |max, &x| max.max(x));
     let weighted_ave = 0.2 * max + 0.8 * min;
     let scale        = 1.0f32 / (max - weighted_ave - 4.0);
     let offset       = -weighted_ave;
-    
+
     // Key sizes
     let ks0 = LARGE_KEY_SIZE;
     let ks1 = (ks0 * 3) / 2; // backspace and tab key sizes
     let ks2 = (ks0 * 7) / 4; // caps lock and enter key sizes
     let ks3 = (ks0 * 9) / 4; // shift key sizes
-    
+
     // Draw the diagram using the font
     let w  = 13 * ks0 + (3 * ks0) / 2;
     let h  =  4 * ks0;
     let mut ib = ImageBuffer::new(w, h);
     {
         let bc = Rgba::from_channels(0, 0, 0, 255); // border color: black
-                
+
         // top row
         for i in 0..13 {
             let x = i * ks0;
@@ -964,7 +964,7 @@ fn diagram_single_metric(metric: &[f32; 48], file_name: &str)
             }
         }
         kf.draw_key_border(13 * ks0, 0, ks1, bc, &mut ib); // backspace key
-        
+
         // second row down
         kf.draw_key_border(0, ks0, ks1, bc, &mut ib); // tab key
         for i in 0..13 {
@@ -991,7 +991,7 @@ fn diagram_single_metric(metric: &[f32; 48], file_name: &str)
             }
         }
         kf.draw_key_border(ks2 + 11 * ks0, 2 * ks0, ks2, bc, &mut ib); // enter key
-        
+
         // fourth row down
         kf.draw_key_border(0, 3 * ks0, ks3, bc, &mut ib); // left shift
         for i in 0..10 {
@@ -1003,8 +1003,8 @@ fn diagram_single_metric(metric: &[f32; 48], file_name: &str)
             kf.draw_key_score(x, y, m + 2f32, &mut ib);
         }
         kf.draw_key_border(ks3 + 10 * ks0, 3 * ks0, ks3, bc, &mut ib); // right shift
-    }    
-    
+    }
+
     // Output the resulting image as a png
     let output_file_name = "diagram-".to_string() + file_name + ".png";
     let mut output_file = std::old_io::fs::File::create(&Path::new(output_file_name)).unwrap();
@@ -1020,39 +1020,39 @@ fn diagram_double_metric()
     let score_y_offset: u32 = 5;
     let border_color_0      = Rgba::from_channels(  0,   0,   0, 255); // black
     let border_color_1      = Rgba::from_channels(196, 196, 196, 255); // grey
-    
+
     let rows = 47u32 / columns + if 47u32 % columns > 0 { 1 } else { 0 };
-    
+
     // Load the font
     let kf = KeyFaces::new(DOUBLE_METRIC_KEY_SIZE, DOUBLE_METRIC_KEY_PADDING,
                            DOUBLE_METRIC_PT_SIZE,  DOUBLE_METRIC_PT_SIZE);
-    
+
     //Find the minimum value of the double key metric
     let min = DOUBLE_METRIC.iter().fold(std::f32::INFINITY,     |min, &x| min.min(x.2));
     let max = DOUBLE_METRIC.iter().fold(std::f32::NEG_INFINITY, |max, &x| max.max(x.2));
     let scale  = 1.0 / (max - min - 4.0);
     let offset = 0.0f32;
-    
+
     // Key sizes
     let ks0 = DOUBLE_METRIC_KEY_SIZE;
     let ks1 = (ks0 * 3) / 2; // backspace and tab key sizes
     let ks2 = (ks0 * 7) / 4; // caps lock and enter key sizes
     let ks3 = (ks0 * 9) / 4; // shift key sizes
-    
+
     // Draw the diagram using the font
     let lw = 13 * ks0 + (3 * ks0) / 2;
     let lh =  4 * ks0;
     let w  = lw * columns + padding * (columns - 1);
     let h  = lh * rows    + padding * (rows    - 1);
     let mut ib = ImageBuffer::new(w, h);
-    
+
     for key in 1..48 {
-        
+
         let c  = (key - 1) as u32 % columns;
         let r  = (key - 1) as u32 / columns;
         let x0 = lw * c + padding * c;
         let y0 = lh * r + padding * r;
-        
+
         // make scoring array for this key
         let mut score = [0f32; 48];
         for i in 0..314 {
@@ -1064,18 +1064,18 @@ fn diagram_double_metric()
                 score[k1 as usize] += s;
             }
         }
-                        
+
         // top row
         for i in 1..14 {
             let x = x0 + (i - 1)*ks0;
             let y = y0;
-            let s = score[i as usize];            
+            let s = score[i as usize];
             let b = if FINGER_ASSIGNMENT[i as usize] % 2 == 0 {
                 border_color_0
             } else {
                 border_color_1
             };
-            
+
             kf.draw_key_border(x, y, ks0, b, &mut ib);
             kf.draw_key_background(x, y, ks0, intensity((s + offset) * scale), &mut ib);
             kf.draw_key_score(x, y - score_y_offset, s, &mut ib);
@@ -1084,7 +1084,7 @@ fn diagram_double_metric()
             }
         }
         kf.draw_key_border(x0 + 13*ks0, y0, ks1, border_color_0, &mut ib); // backspace key
-        
+
         // second row down
         kf.draw_key_border(x0, y0 + ks0, ks1, border_color_1, &mut ib); // tab key
         for i in 14..27 {
@@ -1096,7 +1096,7 @@ fn diagram_double_metric()
             } else {
                 border_color_1
             };
-            
+
             kf.draw_key_border(x, y, ks0, b, &mut ib);
             kf.draw_key_background(x, y, ks0, intensity((s + offset) * scale), &mut ib);
             kf.draw_key_score(x, y - score_y_offset, s, &mut ib);
@@ -1116,7 +1116,7 @@ fn diagram_double_metric()
             } else {
                 border_color_1
             };
-            
+
             kf.draw_key_border(x, y, ks0, b, &mut ib);
             kf.draw_key_background(x, y, ks0, intensity((s + offset) * scale), &mut ib);
             kf.draw_key_score(x, y - score_y_offset, s, &mut ib);
@@ -1126,19 +1126,19 @@ fn diagram_double_metric()
         }
         // enter key
         kf.draw_key_border(x0 + ks2 + 11*ks0, y0 + 2*ks0, ks2, border_color_0, &mut ib);
-        
+
         // fourth row down
         kf.draw_key_border(x0, y0 + 3*ks0, ks3, border_color_1, &mut ib); // left shift
         for i in 38..48 {
             let x = x0 + ks3 + (i - 38)*ks0;
             let y = y0 + 3*ks0;
-            let s = score[i as usize];                        
+            let s = score[i as usize];
             let b = if FINGER_ASSIGNMENT[i as usize] % 2 == 0 {
                 border_color_0
             } else {
                 border_color_1
             };
-            
+
             kf.draw_key_border(x, y, ks0, b, &mut ib);
             kf.draw_key_background(x, y, ks0, intensity((s + offset) * scale), &mut ib);
             kf.draw_key_score(x, y - score_y_offset, s, &mut ib);
@@ -1148,8 +1148,8 @@ fn diagram_double_metric()
         }
         // right shift
         kf.draw_key_border(x0 + ks3 + 10*ks0, y0 + 3*ks0, ks3, border_color_0, &mut ib);
-    }    
-    
+    }
+
     // Output the resulting image as a png
     let output_path = Path::new("diagram-double_metric.png");
     let mut output_file = std::old_io::fs::File::create(&output_path).unwrap();
@@ -1165,13 +1165,12 @@ fn main()
     diagram_layout(WORKMAN_STRING, "workman_layout");
     diagram_layout(PROTO_1_STRING, "proto_1_layout");
     diagram_layout(  WHITE_STRING,   "white_layout");
-    
+
     diagram_finger_assignments(false);
     diagram_finger_assignments(true);
-    
+
     diagram_single_metric( &SINGLE_METRIC,  "single_metric");
     diagram_single_metric(&WORKMAN_METRIC, "workman_metric");
-    
+
     diagram_double_metric();
 }
-

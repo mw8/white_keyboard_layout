@@ -118,15 +118,15 @@ const _WORKMAN_STRING: &'static str = "
    ASHTGYNEOI\"
     ZXMCVKL<>?";
 
-const INITIAL_LAYOUT_STRING: &'static str = "
+const WHITE_STRING: &'static str = "
 #12345@$67890
-  vyd,._jmlu()=
+  vyd,'_jmlu()=
    atheb-csnoi
-    pkgwqxrf'z
+    pkgwqxrf.z
 `!<>/|~%\\*[]^
-  VYD;:&JMLU{}?
+  VYD;\"&JMLU{}?
    ATHEB+CSNOI
-    PKGWQXRF\"Z";
+    PKGWQXRF:Z";
 
 // Which fingers correspond to which keys
 const FINGER_ASSIGNMENT: [u8; 48] = [ 0,
@@ -714,7 +714,7 @@ fn read_layout_file(filename: &str) -> Vec<u8>
         let layout = layout_from_string(&text[..]);
         layout
     } else {
-        let layout = layout_from_string(INITIAL_LAYOUT_STRING);
+        let layout = layout_from_string(WHITE_STRING);
         layout
     }
 }
@@ -1077,7 +1077,7 @@ impl LayoutSwapper
             !frozen(*s)
         }).collect::<Vec<u8>>();
         assert!(symbol_swaps.len() != 1, "Must not have exactly 1 free symbol.");
-                
+
         let home8k_swaps = HOME_EIGHT.iter().map(|k| *k).filter(|k| {
             let s       = layout[(95+*k)    as usize];
             let s_shift = layout[(95+*k+47) as usize];
@@ -1168,7 +1168,7 @@ impl LayoutSwapper
                 }
             }
         } else if i1 < symbol_len + home8k_len {
-            // home-eight-key swap            
+            // home-eight-key swap
             i1 -= symbol_len;
             let mut i2 = self.random_small_index(home8k_len - 1);
             if i1 <= i2 {
@@ -1371,7 +1371,7 @@ impl LayoutObjectiveFunction
         let (words, freqs) = load_texts_directory("texts");
 
         let mut double_scores = [0f32; 9025]; // (9025 = 95*95)
-    
+
         // Add in single key scores and shift penalties, removing repeat penalties
         let min_single_metric = SINGLE_METRIC.iter().fold(std::f32::INFINITY, |m, &x| m.min(x));
         for i in 0..95 {
@@ -1388,7 +1388,7 @@ impl LayoutObjectiveFunction
                 }
             }
         }
-    
+
         // Add in the double key scores
         let min_double_metric = DOUBLE_METRIC.iter().fold(std::f32::INFINITY, |m,&x| m.min(x.2));
         for &(ki, kj, ks) in DOUBLE_METRIC.iter() {
@@ -1400,7 +1400,7 @@ impl LayoutObjectiveFunction
             double_scores[(i+47)*95+j   ] += s;
             double_scores[(i+47)*95+j+47] += s;
         }
-    
+
         // Add in alternating hand penalties
         for i in 0..95 {
             for j in 0..95 {
@@ -1456,7 +1456,7 @@ impl LayoutObjectiveFunction
         }
         score
     }
-    
+
     // Calculate the equivalent of a count for each character, sort them, and print them.
     fn print_char_counts(&self) {
         let char_count = |c: char| -> f32 {
@@ -1493,7 +1493,7 @@ impl LayoutObjectiveFunction
             println!("{}  {}", c, count);
         }
     }
-    
+
     // Calculate how much each finger is used as a percentage for each hand.
     fn print_layout_finger_usage(&self, layout: &[u8]) {
         let mut fu = [0f32; 8]; // finger usage
@@ -1579,7 +1579,7 @@ fn main()
         Some(os_string) => os_string,
         None            => "layout".to_string()
     };
-    
+
     let objective  = LayoutObjectiveFunction::new();
 
     if PRINT_OBJECTIVE_FUNCTION {
@@ -1668,4 +1668,3 @@ fn main()
         cycle_temperature *= CYCLE_TEMPERATURE_FACTOR;
     }
 }
-
