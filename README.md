@@ -1,4 +1,4 @@
-## What is the best keyboard layout?
+## Which keyboard layout is the best?
 
 Often in our thinking we arrive at questions like this that have no real answer, and assuming that they do have an answer generally leads to wasted effort. The word "best" has no meaning without a context; "best" under what circumstances? As we learn from mathematics, the way you define a problem is as important as the answer itself. You state your axioms, and from there you can use mathematical methods to see what result those axioms imply.
 
@@ -196,8 +196,8 @@ Note that this layout still acts like QWERTY for the purposes of keyboard shortc
 
 ### Installation
 
-To use the layout on Mac OS X, download the file named "White_layout_mac.keylayout" from this repository and place it in the /Library/Keyboard Layouts/ folder. Then selected it in system preferences.
+To use the layout on Mac OS X, download the file named "White_layout_mac.keylayout" from this repository and place it in the /Library/Keyboard Layouts/ folder. Then add and select it in System Preferences > Keyboard > Input Sources.
 
-To use the layout on Windows 7 (other versions not confirmed), download the file named "White_layout_win.zip", extract it, and run setup.exe. It will automatically install the correct DLL in the correct place. Or if you don't trust a precompiled version, you can download [the Microsoft Keyboard Layout Creator](https://msdn.microsoft.com/en-us/goglobal/bb964665.aspx), open the file "White_layout_win.klc" (which is just a plain text description of the layout that you can verify), and compile it for your system.
+To use the layout on Windows 7 (other versions not confirmed), download the file named "White_layout_win.zip", extract it, and run setup.exe. It will automatically install the correct DLL in the correct place. Or if you don't trust a precompiled version, you can download [the Microsoft Keyboard Layout Creator](https://msdn.microsoft.com/en-us/goglobal/bb964665.aspx), open the file "White_layout_win.klc" (which is just a plain text description of the layout that you can verify), and compile it for your system. Then add and select it in Control Panel > Region and Languages > Keyboards and Languages.
 
 To use the layout on any other operating system, make it yourself, send it to me, and I'll update this for your system.
