@@ -5,5 +5,5 @@ version = "0.0.0"
 authors = [ "Michael White <mwhite85@gmail.com>" ]
 
 [dependencies]
-rand = "0.1"
+rand = "0.3.7"
 

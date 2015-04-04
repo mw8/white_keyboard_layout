@@ -72,7 +72,7 @@ He codified this design concept by creating a customized key score for each key 
 
 I've explained my criticisms of some of the design decisions and metrics emphasized by existing layouts, but I also generally object to the idea that we should all use the same layout. If you use a computer almost every day, the amount of time you spend typing in your life will be much greater than the amount of time you spend learning to type using a new layout.
 
-My preferences derive from the fact that I split my time between scientific writing and programming, and so the choice of input text used in evaluating the objective function should reflect that. I'm not going to be typing out all of "Alice in Wonderland" anytime soon. I'm mainly going to be writing emails, IMs, research papers, and code.
+My preferences derive from the fact that I split my time between scientific writing and programming, and so the choice of input text used in evaluating the objective function should reflect that. I'm not going to be typing out all of "Alice in Wonderland" anytime soon. I'm mainly going to be writing code, emails, IMs, and research papers.
 
 Another important point is that the amount of time I spend on a computer where I can customize the keyboard layout is much, much larger than the time I spend using a computer without a customizable layout. I am willing to fall back on QWERTY for those rare cases.
 
@@ -91,7 +91,7 @@ That last list item is closely related to an idea from physics called the multib
 
 ![Multibody expansion formula](diagrams/mbe.png)
 
-Similarly, when evaluating the cost of typing a word in a given layout, I want to break down that cost into a sum of single key scores, double key scores, and triples key scores. I am stopping at 3 mostly because there are already 97,290 triple key scores, and moving to quadruple key scores would require 4,280,760 more scores (though admittedly most of them are zero).
+Similarly, when evaluating the cost of typing a word in a given layout, I want to break down that cost into a sum of single key scores, double key scores, and triples key scores. I am stopping at 3 mostly because quadruple key presses are well approximated by two consecutive triples, but also because there are 4,280,760 scores to consider (though admittedly most of them are zero).
 
 ## The new objective function
 
@@ -103,7 +103,7 @@ The objective function for this new layout is based on a linear combination of t
 4. A small penalty score for pressing consecutive keys with different hands.
 5. A small penalty score for having to hold shift while pressing a key.
 
-This scoring method is then evaluated on a collection of text that is representative of all text I've typed in the last four years, which produces a number representing the objective function. Specifically, I take all of my code, IMs, emails, and articles over that time period, remove any non-ASCII characters, and create a long word frequency list to be used in scoring layouts. Lastly I throw out any words that were not used more than 20 times over 4 years, for the sake of efficiency.
+This scoring method is then evaluated on a collection of text that is representative of all text I've typed in the last five years, which produces a number representing the objective function. Specifically, I take all of my code, IMs, emails, and articles over that time period, remove any non-ASCII characters, and create a long word frequency list to be used in scoring layouts. Lastly I throw out any words that were not used more than 20 times over 5 years, for the sake of efficiency.
 
 
 ### Single key scores
@@ -201,3 +201,5 @@ To use the layout on Mac OS X, download the file named "White_layout_mac.keylayo
 To use the layout on Windows 7 (other versions not confirmed), download the file named "White_layout_win.zip", extract it, and run setup.exe. It will automatically install the correct DLL in the correct place. Or if you don't trust a precompiled version, you can download [the Microsoft Keyboard Layout Creator](https://msdn.microsoft.com/en-us/goglobal/bb964665.aspx), open the file "White_layout_win.klc" (which is just a plain text description of the layout that you can verify), and compile it for your system. Then add and select it in Control Panel > Region and Languages > Keyboards and Languages.
 
 To use the layout on any other operating system, make it yourself, send it to me, and I'll update this for your system.
+
+Happy typing.

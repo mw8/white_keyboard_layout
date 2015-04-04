@@ -41,12 +41,10 @@
 // 46 .      62 >      78 N      94 ^     110 n     126 ~
 // 47 /      63 ?      79 O      95 _     111 o
 
-
-#![feature(fs, io, os, path, std_misc, collections)]
+#![feature(path_ext)]
 extern crate rand;
 use std::ops::Add;
 use std::path::Path;
-use std::num::Float;
 use std::io::{Read, Write};
 use std::fs::{File, PathExt};
 use std::collections::HashMap;
@@ -581,7 +579,7 @@ const TRIPLE_METRIC: [(u8, u8, u8, f32); 52] = [
 // LAYOUT FUNCTIONS
 
 // Check all the assumptions that make a byte array into a layout array
-fn assert_valid_layout(l: &[u8])
+fn assert_valid_layout(l: &[u8; 190])
 {
     assert!(l[0] == 0 && l[95] == 0, "Layout must assign 0 to the space key.");
     let mut occurrences = [0u8; 95];
@@ -631,7 +629,7 @@ fn check_valid_ascii_subset(s: &str) -> Result<(), (char, usize)>
 }
 
 // Create a layout array from a string in the correct format.
-fn layout_from_string(s_with_whitespace: &str) -> Vec<u8>
+fn layout_from_string(s_with_whitespace: &str) -> [u8; 190]
 {
     let s_string = s_with_whitespace.chars().filter(|x| !x.is_whitespace()).collect::<String>();
     assert!(s_string.len() == 94, "Layout string is {} characters, not 94.", s_string.len());
@@ -639,19 +637,16 @@ fn layout_from_string(s_with_whitespace: &str) -> Vec<u8>
     if let Err((c,_)) = check_valid_ascii_subset(s) {
         panic!("Invalid character in layout: {} -> {}", c as u32, c);
     }
-    let mut layout = std::iter::repeat(0u8).take(190).collect::<Vec<u8>>();
-    {
-        let ls = layout.as_mut_slice();
-        let mut ki = 1u8;
-        for c in s.chars() {
-            let ci = (c as u8) - 32;
-            assert!(ci > 0u8 && ci < 95u8, "Layout string has invalid character: {}", c);
-            ls[ci as usize] = ki;
-            ls[(ki + 95) as usize] = ci;
-            ki += 1;
-        }
-        assert_valid_layout(ls);
+    let mut layout = [0u8; 190];
+    let mut ki = 1u8;
+    for c in s.chars() {
+        let ci = (c as u8) - 32;
+        assert!(ci > 0u8 && ci < 95u8, "Layout string has invalid character: {}", c);
+        layout[ci as usize] = ki;
+        layout[(ki + 95) as usize] = ci;
+        ki += 1;
     }
+    assert_valid_layout(&layout);
     layout
 }
 
@@ -704,7 +699,7 @@ fn write_layout_file(layout: &[u8], filename: &str)
 }
 
 // Read a string from a file and convert it to a layout. If the file doesn't exist, use default.
-fn read_layout_file(filename: &str) -> Vec<u8>
+fn read_layout_file(filename: &str) -> [u8; 190]
 {
     let path = Path::new(filename);
     if path.exists() {
@@ -802,7 +797,7 @@ fn print_single_metric()
 }
 
 // Print a layout array in a visually useful way.
-fn print_layout(l: &[u8])
+fn print_layout(l: &[u8; 190])
 {
     assert_valid_layout(l);
     let lower_case = &l[95..190];
@@ -973,10 +968,6 @@ fn load_text_to_word_frequency_hashmap(path: &Path, hm: &mut HashMap<String, f32
 // Load a directory of evaluation texts and word frequency list files into an array of byte arrays
 fn load_texts_directory(dir_filename: &str) -> (Vec<u8>, Vec<f32>)
 {
-    //let wfl = Path::new("objective_function.wfl.txt");
-    //if wfl.is_file() {
-    //    return load_word_frequency_list(wfl, 1.0f64);
-    //}
     let mut hm = HashMap::new();
     let dir = Path::new(dir_filename);
     if dir.is_dir() {
@@ -1046,7 +1037,7 @@ fn load_texts_directory(dir_filename: &str) -> (Vec<u8>, Vec<f32>)
 // To perform a swap, we randomly select a type, and then within that type we randomly select two
 // entities to swap.
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 enum LayoutSwap {
     None,
     Symbol(u8),
@@ -1067,7 +1058,7 @@ struct LayoutSwapper
 
 impl LayoutSwapper
 {
-    fn new(layout: &[u8]) -> LayoutSwapper {
+    fn new(layout: &[u8; 190]) -> LayoutSwapper {
         assert_valid_layout(layout);
         let frozen = |s: u8| { FROZEN_SYMBOLS.chars().any(|x| x == (s+32) as char) };
 
@@ -1120,7 +1111,7 @@ impl LayoutSwapper
         result
     }
 
-    fn swap(&mut self, layout: &mut [u8]) {
+    fn swap(&mut self, layout: &mut [u8; 190]) {
         if NUM_TABU_SWAPS > 0 {
             let t1 = self.tabu_swaps[2*self.iteration+0];
             match t1 {
@@ -1243,7 +1234,7 @@ impl LayoutSwapper
 
 
 // Custom extended precision data structure to keep track of many summed floats
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 struct LayoutScore
 {
     i: i32,
@@ -1430,7 +1421,7 @@ impl LayoutObjectiveFunction
     }
 
     // Assign a score to a word in adjusted byte format
-    fn word_score(&self, layout: &[u8], word: &[u8]) -> f32 {
+    fn word_score(&self, layout: &[u8; 190], word: &[u8]) -> f32 {
         let mut score = 0f32;
         let mut k0 = 0u8;
         let mut k1 = 0u8;
@@ -1449,7 +1440,7 @@ impl LayoutObjectiveFunction
     }
 
     // Assign a score to a layout based on the metric scores applied to a word frequency list.
-    fn score(&self, layout: &[u8]) -> LayoutScore {
+    fn score(&self, layout: &[u8; 190]) -> LayoutScore {
         let mut score = LayoutScore::zero();
         for (word, freq) in self.words.split(|x| { *x == 0 }).zip(self.freqs.iter()) {
             score.add_f32(self.word_score(layout, word) * *freq);
@@ -1581,7 +1572,6 @@ fn main()
     };
 
     let objective  = LayoutObjectiveFunction::new();
-
     if PRINT_OBJECTIVE_FUNCTION {
         print_single_metric();
         for i in 1u8..48 {
@@ -1591,14 +1581,13 @@ fn main()
         print!("\n");
     }
 
-    let mut layout_vec = read_layout_file("optimal_layout.txt");
-    let     layout     = layout_vec.as_mut_slice();
-    let mut score      = objective.score(layout);
+    let mut layout = read_layout_file("optimal_layout.txt");
+    let mut score  = objective.score(&layout);
 
     // Display the starting layout
-    print_layout(layout);
+    print_layout(&layout);
     print!("\n     Score: {}\n", score.to_f64());
-    objective.print_layout_finger_usage(layout);
+    objective.print_layout_finger_usage(&layout);
     print!("\n");
 
     // Perform several simulated annealing cycles
@@ -1606,13 +1595,11 @@ fn main()
     let mut cycle_temperature = CYCLE_TEMPERATURE_START;
 
     while cycle_temperature > CYCLE_TEMPERATURE_FINAL {
-        let mut new_layout_vec  = layout.to_vec();
-        let mut best_layout_vec = layout.to_vec();
-        let     new_layout      = new_layout_vec.as_mut_slice();
-        let     best_layout     = best_layout_vec.as_mut_slice();
+        let mut new_layout:     [u8; 190];
+        let mut best_layout     = layout;
         let mut best_score      = score;
-        let     previous_score  = score;
-        let mut random_key_swap = LayoutSwapper::new(layout);
+        let     prev_best_score = score;
+        let mut random_key_swap = LayoutSwapper::new(&layout);
         let mut temperature     = cycle_temperature;
         let mut iteration       = 0u64;
 
@@ -1620,21 +1607,21 @@ fn main()
         while temperature > TEMPERATURE_FINAL {
 
             // Make new layout
-            new_layout.clone_from_slice(layout);
-            random_key_swap.swap(new_layout);
+            new_layout = layout;
+            random_key_swap.swap(&mut new_layout);
 
             // Test new layout
-            let new_score = objective.score(new_layout);
+            let new_score = objective.score(&new_layout);
 
             // Possibly switch current layout to new one based on probability
             if probability(score, new_score, temperature) > rand::random::<f64>() {
-                layout.clone_from_slice(new_layout);
-                score = new_score;
+                layout = new_layout;
+                score  = new_score;
             }
 
             // Save layout if it's the best one yet
             if score < best_score {
-                best_layout.clone_from_slice(layout);
+                best_layout = layout;
                 best_score  = score;
             }
 
@@ -1648,18 +1635,18 @@ fn main()
             temperature *= TEMPERATURE_FACTOR;
         }
 
-		// Output new best layout if different than previous
+		// Output new best layout if different than previous best
 		print!("\n");
-        if best_score != previous_score {
-            print_layout(best_layout);
+        if best_score != prev_best_score {
+            print_layout(&best_layout);
             print!("\n     Score: {}\n", best_score.to_f64());
-            objective.print_layout_finger_usage(best_layout);
+            objective.print_layout_finger_usage(&best_layout);
 	        print!("\n");
-			write_layout_file(best_layout, &format!("layouts/{}_{}_{}.txt",
+			write_layout_file(&best_layout, &format!("layouts/{}_{}_{}.txt",
 									                output_prefix,
                                                     best_score.to_f64() as i32,
                                                     cycle_iteration)[..]);
-            write_layout_file(best_layout, "optimal_layout.txt");
+            write_layout_file(&best_layout, "optimal_layout.txt");
         }
 
         // Prepare for next cycle
