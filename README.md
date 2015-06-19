@@ -87,7 +87,7 @@ Lastly, I just find optimization problems like this fascinating, and I have a fe
 
 ### The multibody expansion
 
-That last list item is closely related to an idea from physics called the multibody expansion, which finds use in molecular simulations. The energy of large groups of particles is often very complicated and hard to calculate, due to quantum mechanics, but in many simulations it is simplified and written as a sums of different types of energies: one for single particles, one for for pair interactions, one for 3-body interactions, etc. The single particle energy can represent a background potential field. The pair interaction often represents attraction or repulsion between pairs of particles based on the distance between them. The 3-body interaction can be used to characterize bond angles in molecules.
+That last list item is closely related to an idea from physics called the multibody expansion, which finds use in molecular simulations. The energy of large groups of particles is often very complicated and hard to calculate, due to quantum mechanics, but in many simulations it is simplified and written as a sum of different types of energies: one for single particles, one for pair interactions, one for 3-body interactions, etc. The single particle energy can represent a background potential field. The pair interaction often represents attraction or repulsion between pairs of particles based on the distance between them. The 3-body interaction can be used to characterize bond angles in molecules.
 
 ![Multibody expansion formula](diagrams/mbe.png)
 
