@@ -65,7 +65,7 @@ He codified this design concept by creating a customized key score for each key 
 * There are no scores for the keys with numbers and symbols.
 * As previously mentioned, preserving only some QWERTY shortcuts is a bad thing, in my opinion.
 * The home keys are still in the same place as the ASDF and JKL; keys in QWERTY. If we're going to go to the trouble of changing from the standard layout, we might as well get rid of as many unnecessary constraints as possible, including where we put our hands on the keyboard. Sliding the right hand one key right allows the right pinky to be assigned to almost half as many keys as before. If I'm going to be reaching for a key, I prefer to use my strong index finger instead of my weak pinky. Plus, the right pinky is already responsible for the enter and shift keys (also the backspace key in most layouts). Another minor reason for shifting the right hand one key right is that it's pleasingly symmetric. The enter and caps lock keys will now be adjacent to your pinkies. On most laptops, your hands will now be equidistant from both edges.
-* Another unnecessary constraint is keeping the same key pairings as used by QWERTY. For example, the comma key is still paired with the left angle bracket key, in what I consider to be prime real estate space, while the left parenthesis is stuck off in the boonies, in the top row behind behind the 9.
+* Another unnecessary constraint is keeping the same key pairings as used by QWERTY. For example, the comma key is still paired with the left angle bracket key, in what I consider to be prime real estate space, while the left parenthesis is stuck off in the boonies, in the top row behind the 9.
 
 
 ## Why a new layout?
