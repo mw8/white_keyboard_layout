@@ -1,12 +1,9 @@
 [package]
-
 name    = "diagrams"
-version = "0.0.0"
+version = "0.0.1"
 authors = [ "Michael White <mwhite85@gmail.com>" ]
 
-[dependencies.image]
-git     = "https://github.com/PistonDevelopers/image.git"
-
-[dependencies.freetype-rs]
-git     = "https://github.com/PistonDevelopers/freetype-rs.git"
+[dependencies]
+image = "0.12.2"
+freetype-rs = "0.11.0"
 

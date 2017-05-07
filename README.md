@@ -165,13 +165,13 @@ So I collected timings between all key presses as an experiment to see how well 
 Until then, I have performed an informal parameter study and chosen the following parameters based on which optimal layouts are produced with the resulting objective function.
 
 | score type               | coefficient |
-|--------------------------|-------------|
-| single score             | 1.00        |
-| double score             | 1.00        |
-| triple score             | 1.00        |
-| shift-holding penalty    | 1.50        |
-| reversed triple penalty  | 0.25        |
-| hand-alternation penalty | 0.20        |
+|--------------------------|:-----------:|
+| single score             |    1.00     |
+| double score             |    1.00     |
+| triple score             |    1.00     |
+| shift-holding penalty    |    1.50     |
+| reversed triple penalty  |    0.25     |
+| hand-alternation penalty |    0.20     |
 
 
 ## Finding the optimal layout

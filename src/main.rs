@@ -41,12 +41,11 @@
 // 46 .      62 >      78 N      94 ^     110 n     126 ~
 // 47 /      63 ?      79 O      95 _     111 o
 
-#![feature(path_ext)]
 extern crate rand;
 use std::ops::Add;
+use std::fs::File;
 use std::path::Path;
 use std::io::{Read, Write};
-use std::fs::{File, PathExt};
 use std::collections::HashMap;
 use std::collections::hash_map::Entry::{Vacant, Occupied};
 
@@ -617,7 +616,7 @@ fn assert_valid_layout(l: &[u8; 190])
 fn check_valid_ascii_subset(s: &str) -> Result<(), (char, usize)>
 {
     let mut line_num = 1usize;
-    for line in s.lines_any() {
+    for line in s.lines() {
         for c in line.chars() {
             if !((' ' <= c && c <= '~') || c == '\n' || c == '\r' || c == '\t') {
                 return Err((c, line_num));
@@ -702,7 +701,7 @@ fn write_layout_file(layout: &[u8], filename: &str)
 fn read_layout_file(filename: &str) -> [u8; 190]
 {
     let path = Path::new(filename);
-    if path.exists() {
+    if std::fs::metadata(path).is_ok() {
         let mut file = File::open(&path).unwrap();
         let mut text = String::new();
         file.read_to_string(&mut text).unwrap();
@@ -855,7 +854,7 @@ fn load_word_frequency_list_to_string(path: &Path, multiplier: f64) -> (String, 
     let mut line_num = 1usize;
     let mut words = String::new();
     let mut freqs = Vec::new();
-    for line in list[..].lines_any() {
+    for line in list[..].lines() {
         let mut word_freq_pair = line.split('\t');
         let word = match word_freq_pair.next() {
             Some(w) => w.trim(),
@@ -918,7 +917,7 @@ fn load_text_to_word_frequency_hashmap(path: &Path, hm: &mut HashMap<String, f32
                ln, filename.to_str().unwrap(), c as u32, c);
     }
     let new_text = text.replace("\n", " ").replace("\r", " ").replace("\t", " ");
-    for line in new_text[..].lines_any() {
+    for line in new_text[..].lines() {
         for word in line.split(' ') {
             let mut c0 = 0;
             let mut c1 = 0;
@@ -970,29 +969,27 @@ fn load_texts_directory(dir_filename: &str) -> (Vec<u8>, Vec<f32>)
 {
     let mut hm = HashMap::new();
     let dir = Path::new(dir_filename);
-    if dir.is_dir() {
-        let dir_contents = std::fs::read_dir(&dir).unwrap();
-        for entry in dir_contents {
-            let entry = entry.unwrap().path();
-            let efn = entry.file_name().unwrap().to_str().unwrap();
-            let l = efn.len();
-            if l >= 4 && &efn[l-4..l] == ".txt" {
-                if l >= 8 && &efn[l-8..l-4] == ".wfl" {
-                    let multiplier = if efn == "corpus_1.wfl.txt" {
-                        CORPUS_1_COEFFICIENT
-                    } else if efn == "corpus_2.wfl.txt" {
-                        CORPUS_2_COEFFICIENT
-                    } else {
-                        1.0f64
-                    };
-                    load_list_to_word_frequency_hashmap(&entry, multiplier, &mut hm);
+    let dir_metadata = std::fs::metadata(dir).unwrap();
+    assert!(dir_metadata.is_dir(), "File is not a directory: {:?}", dir);
+    let dir_contents = std::fs::read_dir(&dir).unwrap();
+    for entry in dir_contents {
+        let entry = entry.unwrap().path();
+        let efn = entry.file_name().unwrap().to_str().unwrap();
+        let l = efn.len();
+        if l >= 4 && &efn[l-4..l] == ".txt" {
+            if l >= 8 && &efn[l-8..l-4] == ".wfl" {
+                let multiplier = if efn == "corpus_1.wfl.txt" {
+                    CORPUS_1_COEFFICIENT
+                } else if efn == "corpus_2.wfl.txt" {
+                    CORPUS_2_COEFFICIENT
                 } else {
-                    load_text_to_word_frequency_hashmap(&entry, &mut hm);
-                }
+                    1.0f64
+                };
+                load_list_to_word_frequency_hashmap(&entry, multiplier, &mut hm);
+            } else {
+                load_text_to_word_frequency_hashmap(&entry, &mut hm);
             }
         }
-    } else {
-        panic!("Not a directory: ".to_string() + dir_filename);
     }
     let mut hm_vec = hm.iter().collect::<Vec<(&String, &f32)>>();
     hm_vec.sort_by(|a: &(&String, &f32), b: &(&String, &f32)| -> std::cmp::Ordering {
